@@ -33,7 +33,8 @@ def entry_prompt(HRR, resting_hr):
 	'''
 	if args are not given in Run:, this will prompt for them
 	'''
-	goal_pct = input('Enter goal HR pct or "[goal min] [goal max]: ')
+	goal_pct = input('Enter goal HR pct or [goal min] [goal max]: ')
+	quitCheck(goal_pct)
 	try:
 		if len(goal_pct.split(' ')) == 2:
 			min_goal = int(goal_pct.split(' ')[0])
@@ -67,7 +68,9 @@ def output_hr_range(min_goal, max_goal, min_goal_hr, max_goal_hr):
 	print('Target HR ({}% - {}%) = {} - {} bpm'.format(min_goal, max_goal, min_goal_hr, max_goal_hr))
 	return
 
-
+def quitCheck(entry):
+	if (entry ==  'q') or (entry == 'quit'):
+		sys.exit()
 
 resting_hr = 38
 max_hr = 203
