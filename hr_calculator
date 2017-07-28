@@ -1,0 +1,89 @@
+#! python3
+
+'''
+HR % Calculator.  It knows my resting and max HR.
+
+Run: hr [pct] --> goal hr
+Run: hr [min max] --> goal range
+***just enter the digits.  no % sign.***
+
+batch file = hr.bat
+'''
+import sys
+
+
+def calc_range(HRR, resting_hr, min_goal, max_goal):
+	'''
+	Calculates goal range when a min and max pct are given
+	'''
+	min_goal_hr = calc_hr(HRR, resting_hr, min_goal)
+	max_goal_hr = calc_hr(HRR, resting_hr, max_goal)
+	output_hr_range(min_goal, max_goal, min_goal_hr, max_goal_hr)
+
+	
+
+def calc_hr(HRR, resting_hr, target_pct):
+	'''
+	Calculates goal HR when given a pct
+	'''
+	goal_hr = resting_hr + (HRR * (int(target_pct)/100))
+	return round(goal_hr)
+
+def entry_prompt(HRR, resting_hr):
+	'''
+	if args are not given in Run:, this will prompt for them
+	'''
+	goal_pct = input('Enter goal HR pct or "[goal min] [goal max]: ')
+	try:
+		if len(goal_pct.split(' ')) == 2:
+			min_goal = int(goal_pct.split(' ')[0])
+			max_goal = int(goal_pct.split(' ')[1])
+			calc_range(HRR, resting_hr, min_goal, max_goal)
+		elif int(goal_pct) in range(0,100):
+			goal_pct = int(goal_pct)
+			goal_hr = calc_hr(HRR, resting_hr, goal_pct)
+			output_hr(goal_pct, goal_hr)
+			#print('Target HR ({}%) = {} bpm'.format(sys.argv[1], str(goal_hr)))
+		else:
+			print('Try again')
+			entry_prompt(HRR, resting_hr)
+	except ValueError:
+		print('Try again')
+		entry_prompt(HRR, resting_hr)
+
+def output_info():
+	print('~ '*20)
+	print('Resting HR = 38 bpm')
+	print('Max HR = 203 bpm')
+	print('~ '*20 + '\n')
+
+
+def output_hr(goal_pct, goal_hr):
+	print('Target HR ({}%) = {} bpm'.format(goal_pct, str(goal_hr)))
+	return
+
+
+def output_hr_range(min_goal, max_goal, min_goal_hr, max_goal_hr):
+	print('Target HR ({}% - {}%) = {} - {} bpm'.format(min_goal, max_goal, min_goal_hr, max_goal_hr))
+	return
+
+
+
+resting_hr = 38
+max_hr = 203
+HRR = (max_hr - resting_hr)
+output_info()
+
+if len(sys.argv) == 2:
+	goal_pct = sys.argv[1]
+	goal_hr = calc_hr(HRR, resting_hr, goal_pct)
+	output_hr(goal_pct, goal_hr)
+	#print('Target HR ({}%) = {} bpm'.format(sys.argv[1], str(round(int(goal_hr)))))
+
+elif len(sys.argv) == 3:
+	min_goal_pct = sys.argv[1]
+	max_goal_pct = sys.argv[2]
+	calc_range(HRR, resting_hr, min_goal_pct, max_goal_pct)
+else:
+	entry_prompt(HRR, resting_hr)
+	
